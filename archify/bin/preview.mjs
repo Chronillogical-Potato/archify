@@ -51,7 +51,7 @@ function previewPage() {
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Archify Live Preview</title>
   <style>
-    :root { color-scheme: light dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    :root { color-scheme: light dark; font-family: 'Fira Code Nerd Font Propo', ui-sans-serif, system-ui, sans-serif; }
     * { box-sizing: border-box; }
     html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #0b111b; }
     body { display: grid; grid-template-rows: auto minmax(0, 1fr); color: #e8edf5; }

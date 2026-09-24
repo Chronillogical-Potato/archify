@@ -1,0 +1,34 @@
+{
+  "created": "2026-09-23T17:45:00-05:00",
+  "policy": {
+    "allowed_fonts": [
+      {
+        "file": "fonts/FiraCodeNerdFontPropo-Retina.ttf",
+        "use": "GUI/reading/body; icons that look squeezed in mono"
+      },
+      {
+        "file": "fonts/FiraCodeNerdFontMono-Retina.ttf",
+        "use": "grid-aligned mono only"
+      },
+      {
+        "file": "fonts/GeistPixel-Line.otf",
+        "use": "titles/headers/standalone labels only; never inline with other families; own HTML container"
+      }
+    ],
+    "forbidden": [
+      "Google Fonts CDN",
+      "jsDelivr at runtime",
+      "any other font family in Cookie Viz stack"
+    ]
+  },
+  "sync_targets": [
+    "GrokBot box /workspace/cookie-viz-assets",
+    "Hedwig (pending)",
+    "MBP source ~/Library/Fonts"
+  ],
+  "sha256": {
+    "GeistPixel-Line.otf": "fda46295fdb5750a696b6fa41f6ca39aabad66ca763fc8dc0db83dd48591c67d",
+    "FiraCodeNerdFontMono-Retina.ttf": "ecc64595bb532ab1d256bc92b765c12b602c1f2892eebd777ff063a32a2d7c07",
+    "FiraCodeNerdFontPropo-Retina.ttf": "3aadeb98d0a24cd22ed2952892781635377589be4f4e35796c03eff11f7b3c11"
+  }
+}
