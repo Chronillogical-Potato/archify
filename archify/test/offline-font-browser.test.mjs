@@ -105,19 +105,21 @@ test('fresh viewers use bundled fonts with local fonts disabled and identical of
           if (blocked) assert.deepEqual(snapshot, online.get(key), key);
           else online.set(key, snapshot);
           const fonts = await actualFonts(browser, '.diagram-container svg text[data-node-label]');
-          assert.ok(fonts.some(f => f.isCustomFont && /JetBrains Mono/.test(f.familyName)), JSON.stringify(fonts));
+          assert.ok(fonts.some(f => f.isCustomFont && /Fira Code Nerd Font Mono/.test(f.familyName)), JSON.stringify(fonts));
           const loaded = await evaluate(browser, `(async () => {
-            await Promise.all([400,500,600,700].map(w => document.fonts.load(w + ' 16px "JetBrains Mono"', 'A Ā Ѡ Ж Ω ắ')));
-            return Array.from(document.fonts).filter(f => /JetBrains Mono/.test(f.family)).map(f => f.status);
+            const families = ['Fira Code Nerd Font Propo', 'Fira Code Nerd Font Mono', 'Geist Pixel Line'];
+            await Promise.all(families.map(f => document.fonts.load('400 16px "' + f + '"', 'A Ā Ѡ Ж Ω ắ')));
+            return Array.from(document.fonts).filter(f => /Fira Code Nerd Font|Geist Pixel Line/.test(f.family)).map(f => f.status);
           })()`);
-          assert.deepEqual(loaded, Array(6).fill('loaded'));
+          assert.deepEqual(loaded, Array(3).fill('loaded'));
         }
         await browser.inspect({ artifactPath: compare, width: 1440, height: 900, theme: 'light' });
         const frames = await evaluate(browser, `(async () => Promise.all(Array.from(document.querySelectorAll('iframe[srcdoc]')).map(async frame => {
-          await frame.contentDocument.fonts.load('400 16px "JetBrains Mono"', 'A Ā Ѡ Ж Ω ắ');
-          return Array.from(frame.contentDocument.fonts).filter(f => /JetBrains Mono/.test(f.family)).map(f => f.status);
+          const families = ['Fira Code Nerd Font Propo', 'Fira Code Nerd Font Mono', 'Geist Pixel Line'];
+          await Promise.all(families.map(f => frame.contentDocument.fonts.load('400 16px "' + f + '"', 'A Ā Ѡ Ж Ω ắ')));
+          return Array.from(frame.contentDocument.fonts).filter(f => /Fira Code Nerd Font|Geist Pixel Line/.test(f.family)).map(f => f.status);
         })))()`);
-        assert.deepEqual(frames, [Array(6).fill('loaded'), Array(6).fill('loaded')]);
+        assert.deepEqual(frames, [Array(3).fill('loaded'), Array(3).fill('loaded')]);
         assert.deepEqual(requests, [], 'viewers must not attempt an HTTP(S) request');
       } finally { await browser.close(); }
     }
@@ -165,7 +167,7 @@ test('SVG and raster exports preserve the viewer font with local fonts and netwo
     await loaded;
     await evaluate(browser, 'document.fonts.ready');
     const fonts = await actualFonts(browser, 'text[data-node-label]');
-    assert.ok(fonts.some(f => f.isCustomFont && /JetBrains Mono/.test(f.familyName)), JSON.stringify(fonts));
+    assert.ok(fonts.some(f => f.isCustomFont && /Fira Code Nerd Font Mono/.test(f.familyName)), JSON.stringify(fonts));
     assert.deepEqual(requests, []);
   } finally { await browser.close(); fs.rmSync(tmp, { recursive: true, force: true }); }
 });
