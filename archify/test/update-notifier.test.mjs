@@ -432,6 +432,11 @@ function assertUnsafeCacheStateIsIgnored(testFixture) {
   });
 }
 
+
+// Cookie fleet hosts export ARCHIFY_UPDATE_CHECK_DISABLED=1 globally. These tests exercise the
+// checker against local fixtures only; tests that want the disabled path set the variable explicitly.
+delete process.env.ARCHIFY_UPDATE_CHECK_DISABLED;
+
 test('production manifest URL is a fixed trusted GitHub Pages resource', () => {
   assert.equal(DEFAULT_MANIFEST_URL, expectedManifestUrl);
   const local = JSON.parse(fs.readFileSync(path.join(skillRoot, 'skill-release.json'), 'utf8'));

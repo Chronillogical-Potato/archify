@@ -66,7 +66,7 @@ function assertFriendlyFailure(mode, doc, label) {
   assert.notEqual(code, 0, `${label}: expected non-zero exit`);
   assert.doesNotMatch(stderr, /TypeError|RangeError|is not a function|Cannot read/,
     `${label}: crashed instead of reporting friendly error:\n${stderr}`);
-  assert.doesNotMatch(html, /NaN|undefined/, `${label}: wrote NaN/undefined into HTML`);
+  assert.doesNotMatch(html.replace(/data:[^)"']+/g, 'data:'), /NaN|undefined/, `${label}: wrote NaN/undefined into HTML`);
 }
 
 // ---- type-wrong-but-JSON-legal documents per mode ----
@@ -131,7 +131,8 @@ test('property: shuffling node/state order still renders (order-independence)', 
       }
       const { code, html } = render(mode, doc);
       assert.equal(code, 0, `${mode} seed ${seed}: valid shuffle should render (exit 0)`);
-      assert.doesNotMatch(html, /NaN|undefined>/, `${mode} seed ${seed}: NaN in output`);
+      // Base64 font data can legitimately contain the letters "NaN"; check everything else.
+      assert.doesNotMatch(html.replace(/data:[^)"']+/g, 'data:'), /NaN|undefined>/, `${mode} seed ${seed}: NaN in output`);
     }
   }
 });

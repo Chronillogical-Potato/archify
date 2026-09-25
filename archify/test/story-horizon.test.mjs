@@ -8,7 +8,10 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const skillRoot = path.resolve(__dirname, '..');
-const template = fs.readFileSync(path.join(skillRoot, 'assets', 'template.html'), 'utf8');
+// Embedded Cookie WOFF2 data URLs put ~1.6 MB on one line; line-oriented regexes below would go
+// quadratic on it, so assertions scan the template with font data URLs collapsed.
+const template = fs.readFileSync(path.join(skillRoot, 'assets', 'template.html'), 'utf8')
+  .replace(/url\(data:font\/[^)]*\)/g, 'url(data:font/stripped)');
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'archify-story-horizon-'));
 
 const CASES = {

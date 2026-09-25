@@ -65,8 +65,10 @@ test('production showcase is readable in the real 1440 by 900 adaptive reader', 
       ));
       for (const observation of [desktop, darkDesktop]) {
         assert.ok(observation);
-        assert.equal(observation.readerWidth, 960);
-        assert.equal(observation.diagramWidth, 930);
+        // Cookie fork: widths measured with the Cookie viewer fonts (Propo body/GUI, Mono diagram text);
+        // upstream JetBrains-era values were 960 / 930. Readability and the 900px fit are unchanged.
+        assert.equal(observation.readerWidth, 962);
+        assert.equal(observation.diagramWidth, 932);
         assert.ok(observation.minimumProjectedNodeTextPx >= MIN_PROJECTED_NODE_TEXT_PX);
         assert.equal(observation.minimumProjectedNodeTextDetail, 'boundary');
         assert.equal(observation.minimumProjectedNodeText, 'AWS eu-west-1 / disaster recovery');
