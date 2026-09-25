@@ -48,14 +48,13 @@ test('main skill stays a bounded authoring router with progressive references', 
   }
 });
 
-test('update awareness is notification-only and never replaces the requested workflow', () => {
-  assert.match(skill, /`scripts\/check-update\.mjs`/);
-  assert.match(skill, /`silent`[\s\S]*without mentioning/i);
-  assert.match(skill, /`update_available`[\s\S]*compact notice/i);
-  assert.match(skill, /information, not permission/i);
-  assert.match(skill, /`severity` is `security`[\s\S]*security update[\s\S]*emphasis only, never user autonomy/i);
-  assert.match(skill, /continue the user's original task/i);
-  assert.match(skill, /installed version unchanged/i);
+test('update awareness is disabled for the Cookie fleet and never phones home', () => {
+  // Cookie fork: the upstream notifier flow (silent / update_available notice) is replaced by a hard
+  // "do not run check-update" rule; ARCHIFY_UPDATE_CHECK_DISABLED=1 is set on every host.
+  assert.match(skill, /## Update awareness \(Cookie fleet — disabled\)/);
+  assert.match(skill, /\*\*Do not\*\* run `scripts\/check-update\.mjs`/);
+  assert.match(skill, /ARCHIFY_UPDATE_CHECK_DISABLED=1/);
+  assert.match(skill, /Never phone home/i);
   assert.doesNotMatch(skill, /npx skills update|gh skill update/i);
 });
 

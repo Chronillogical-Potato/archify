@@ -78,6 +78,15 @@ async function exported(browser, format) {
   })()`);
 }
 
+
+// CDP reports the platform font by the file's internal names, not the CSS alias:
+// familyName "FiraCode Nerd Font Mono Ret", postScriptName "FiraCodeNFM-Ret".
+// (Propo equivalents: "FiraCode Nerd Font Propo Ret" / "FiraCodeNFP-Ret".)
+const COOKIE_MONO_FONT = /Fira ?Code Nerd Font Mono|FiraCodeNFM/;
+function isCookieMono(f) {
+  return Boolean(f.isCustomFont) && (COOKIE_MONO_FONT.test(f.familyName || '') || COOKIE_MONO_FONT.test(f.postScriptName || ''));
+}
+
 test('fresh viewers use bundled fonts with local fonts disabled and identical offline layout', options, async () => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'archify-font-layout-'));
   const fixtures = [
@@ -105,7 +114,7 @@ test('fresh viewers use bundled fonts with local fonts disabled and identical of
           if (blocked) assert.deepEqual(snapshot, online.get(key), key);
           else online.set(key, snapshot);
           const fonts = await actualFonts(browser, '.diagram-container svg text[data-node-label]');
-          assert.ok(fonts.some(f => f.isCustomFont && /Fira Code Nerd Font Mono/.test(f.familyName)), JSON.stringify(fonts));
+          assert.ok(fonts.some(isCookieMono), JSON.stringify(fonts));
           const loaded = await evaluate(browser, `(async () => {
             const families = ['Fira Code Nerd Font Propo', 'Fira Code Nerd Font Mono', 'Geist Pixel Line'];
             await Promise.all(families.map(f => document.fonts.load('400 16px "' + f + '"', 'A Ā Ѡ Ж Ω ắ')));
@@ -167,7 +176,7 @@ test('SVG and raster exports preserve the viewer font with local fonts and netwo
     await loaded;
     await evaluate(browser, 'document.fonts.ready');
     const fonts = await actualFonts(browser, 'text[data-node-label]');
-    assert.ok(fonts.some(f => f.isCustomFont && /Fira Code Nerd Font Mono/.test(f.familyName)), JSON.stringify(fonts));
+    assert.ok(fonts.some(isCookieMono), JSON.stringify(fonts));
     assert.deepEqual(requests, []);
   } finally { await browser.close(); fs.rmSync(tmp, { recursive: true, force: true }); }
 });
